@@ -1,0 +1,47 @@
+name: Release Pipeline
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+' # Obsługuje tagi typu v0.1.0, v1.0.0 itp.
+
+jobs:
+  release:
+    runs-on: windows-latest # Uruchomienie na Windowsie generuje plik .exe
+
+    permissions:
+      contents: write # Wymagane do tworzenia wydania na GitHubie
+
+    steps:
+      - name: Pobierz kod źródłowy
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Konfiguracja CMake
+        run: cmake -B build
+
+      - name: Kompilacja projektu (Release)
+        run: cmake --build build --config Release
+
+      - name: Spakowanie pliku .exe do archiwum ZIP
+        shell: pwsh
+        run: |
+          # Ścieżka do skompilowanego pliku exe w Visual Studio (domyślnie build/Release/SimQL.exe)
+          $exePath = "build/Release/SimQL.exe"
+          $zipName = "SimQL-${{ github.ref_name }}-win64.zip"
+          
+          # Sprawdzenie czy plik istnieje i spakowanie go
+          if (Test-Path $exePath) {
+              Compress-Archive -Path $exePath -DestinationPath $zipName
+              Write-Host "Utworzono paczkę: $zipName"
+          } else {
+              Write-Error "Nie znaleziono pliku wykonywalnego pod ścieżką: $exePath"
+              exit 1
+          }
+
+      - name: Utworzenie wydania i publikacja paczki
+        uses: softprops/action-gh-release@v2
+        with:
+          files: SimQL-*.zip
+          generate_release_notes: true
