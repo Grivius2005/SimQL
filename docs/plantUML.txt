@@ -1,0 +1,45 @@
+@startuml
+class Field<T: type>
+{
+ - data: T
+ + Field()
+ + Field(T data)
+ + setData(T data): void
+ + getData(): T
+}
+
+class Row
+{
+ - fields: std::vector<Field>
+ + Row(std::vector<std::string> fieldsData)
+ + updateData(int index, std::string fieldData)
+}
+
+class Table
+{
+ - headers: std::vector<std::string>
+ - rows: std::vector<Row>
+ + addRow(std::vector<std::string> tokens): void
+ + deleteRow(std::vector<std::string> tokens): void
+}
+
+class Database
+{
+ - tables: std::vector<std::string>
+ - filePath: std::string
+ + sqlCommand(std::string command): void
+ + changeFilePath(std::string path): void
+ - handleSelect(std::vector<std::string> tokens): void
+ - handleInsert(std::vector<std::string> tokens): void
+ - handleUpdate(std::vector<std::string> tokens): void
+ - handleDelete(std::vector<std::string> tokens): void
+ - saveToFile(): void
+ - loadFromFile(): void
+}
+
+
+
+Row "1" -- "N" Field
+Table "1" -- "N" Row
+Database "1" -- "N" Table
+@enduml
