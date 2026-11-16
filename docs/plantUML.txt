@@ -1,0 +1,68 @@
+@startuml
+class Field<T>
+{
+ - data: T
+ + Field()
+ + Field(T data)
+ + setData(T data): void
+ + getData(): T
+}
+
+class Row
+{
+ - types: vector<DataType>
+ - fields: vector<Field>
+ + Row(vector<string> fieldsData)
+ + getRow(): vector<Field>
+ + updateData(int index, string fieldData): void
+ + addColumn(DataType type): void
+ + deleteColumn(int index): void
+
+}
+
+class Table
+{
+ - headers: vector<string>
+ - rows: vector<Row>
+ + Table(vector<string> headers)
+ + getRows(vector<string> tokens): vector<Row>
+ + addRows(vector<string> tokens): void
+ + updateRows(vector<string> tokens): void
+ + deleteRows(vector<string> tokens): void
+ + addColumn(string header, DataType type): void
+ + deleteColumn(string header): void
+}
+
+class Database
+{
+ - tables: map<string, Table>
+ - filePath: string
+ + getFilePath(): string
+ + setFilePath(string path): void
+ + sqlCommand(string command): void
+ - handleCreate(vector<string> tokens): void
+ - handleSelect(vector<string> tokens): void
+ - handleInsert(vector<string> tokens): void
+ - handleUpdate(vector<string> tokens): void
+ - handleDelete(vector<string> tokens): void
+ - handleAlter(vector<string> tokens): void
+ - printResult(vector<Row> result): void
+ - saveToFile(): void
+ - loadFromFile(): void
+}
+
+enum DataType
+{
+ Integer
+ Double
+ String
+ Boolean
+}
+
+
+Row "1" *-- "N" Field
+Table "1" *-- "N" Row
+Database "1" *-- "N" Table
+Row --> DataType: uses
+Table --> DataType: uses
+@enduml
