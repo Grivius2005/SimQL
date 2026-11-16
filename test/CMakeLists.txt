@@ -7,8 +7,10 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+
 add_executable(unit_tests
         test.cpp
+        field_test.cpp
 )
 
 # Linkowanie Twojego kodu oraz biblioteki GTest
@@ -16,6 +18,8 @@ target_link_libraries(unit_tests
         PRIVATE
         GTest::gtest_main
 )
+
+target_include_directories(unit_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../include)
 
 
 # Integracja z systemem testowym CMake (pozwala uruchamiać przez `ctest`)
