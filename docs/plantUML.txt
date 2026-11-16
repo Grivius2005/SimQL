@@ -1,5 +1,5 @@
 @startuml
-class Field<T: type>
+class Field<T>
 {
  - data: T
  + Field()
@@ -10,36 +10,59 @@ class Field<T: type>
 
 class Row
 {
- - fields: std::vector<Field>
- + Row(std::vector<std::string> fieldsData)
- + updateData(int index, std::string fieldData)
+ - types: vector<DataType>
+ - fields: vector<Field>
+ + Row(vector<string> fieldsData)
+ + getRow(): vector<Field>
+ + updateData(int index, string fieldData): void
+ + addColumn(DataType type): void
+ + deleteColumn(int index): void
+
 }
 
 class Table
 {
- - headers: std::vector<std::string>
- - rows: std::vector<Row>
- + addRow(std::vector<std::string> tokens): void
- + deleteRow(std::vector<std::string> tokens): void
+ - headers: vector<string>
+ - rows: vector<Row>
+ + Table(vector<string> headers)
+ + getRows(vector<string> tokens): vector<Row>
+ + addRows(vector<string> tokens): void
+ + updateRows(vector<string> tokens): void
+ + deleteRows(vector<string> tokens): void
+ + addColumn(string header, DataType type): void
+ + deleteColumn(string header): void
 }
 
 class Database
 {
- - tables: std::vector<std::string>
- - filePath: std::string
- + sqlCommand(std::string command): void
- + changeFilePath(std::string path): void
- - handleSelect(std::vector<std::string> tokens): void
- - handleInsert(std::vector<std::string> tokens): void
- - handleUpdate(std::vector<std::string> tokens): void
- - handleDelete(std::vector<std::string> tokens): void
+ - tables: map<string, Table>
+ - filePath: string
+ + getFilePath(): string
+ + setFilePath(string path): void
+ + sqlCommand(string command): void
+ - handleCreate(vector<string> tokens): void
+ - handleSelect(vector<string> tokens): void
+ - handleInsert(vector<string> tokens): void
+ - handleUpdate(vector<string> tokens): void
+ - handleDelete(vector<string> tokens): void
+ - handleAlter(vector<string> tokens): void
+ - printResult(vector<Row> result): void
  - saveToFile(): void
  - loadFromFile(): void
 }
 
+enum DataType
+{
+ Integer
+ Double
+ String
+ Boolean
+}
 
 
-Row "1" -- "N" Field
-Table "1" -- "N" Row
-Database "1" -- "N" Table
+Row "1" *-- "N" Field
+Table "1" *-- "N" Row
+Database "1" *-- "N" Table
+Row --> DataType: uses
+Table --> DataType: uses
 @enduml
