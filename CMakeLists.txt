@@ -9,4 +9,5 @@ enable_testing()
 
 add_subdirectory(test)
 
-add_executable(SimQL main.cpp)
+add_executable(SimQL main.cpp
+        include/field.hpp)
